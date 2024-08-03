@@ -11,7 +11,7 @@ import (
 
 // SysAutoCodeHistory 自动迁移代码记录,用于回滚,重放使用
 type SysAutoCodeHistory struct {
-	global.GVA_MODEL
+	global.GVA_MODEL_SYS
 	Table           string             `json:"tableName" gorm:"column:table_name;comment:表名"`
 	Package         string             `json:"package" gorm:"column:package;comment:模块名/插件名"`
 	Request         string             `json:"request" gorm:"type:text;column:request;comment:前端传入的结构化信息"`
