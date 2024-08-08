@@ -48,22 +48,54 @@ cors:
           expose-headers: Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type
           allow-credentials: true
 db-list:
-    - type: ""
-      alias-name: ""
+    - disable: false
+      type: "mysql"
+      alias-name: "gva"
+      path: "127.0.0.1"
+      port: "3306"
+      config: "charset=utf8mb4&parseTime=True&loc=Local"
+      db-name: "gva"
+      username: "root"
+      password: "Hello1234"
       prefix: ""
-      port: ""
-      config: ""
-      db-name: ""
-      username: ""
-      password: ""
-      path: ""
+      singular: false
       engine: ""
-      log-mode: ""
       max-idle-conns: 10
       max-open-conns: 100
-      singular: false
+      log-mode: debug
       log-zap: false
-      disable: true
+    - disable: false
+      type: "mysql"
+      alias-name: "shop"
+      path: "127.0.0.1"
+      port: "3306"
+      config: "charset=utf8mb4&parseTime=True&loc=Local"
+      db-name: "shop"
+      username: "root"
+      password: "Hello1234"
+      prefix: ""
+      singular: false
+      engine: ""
+      max-idle-conns: 10
+      max-open-conns: 100
+      log-mode: info
+      log-zap: false
+#    - type: ""
+#      alias-name: ""
+#      prefix: ""
+#      port: ""
+#      config: ""
+#      db-name: ""
+#      username: ""
+#      password: ""
+#      path: ""
+#      engine: ""
+#      log-mode: ""
+#      max-idle-conns: 10
+#      max-open-conns: 100
+#      singular: false
+#      log-zap: false
+#      disable: true
 disk-list:
     - mount-point: /
 email:
