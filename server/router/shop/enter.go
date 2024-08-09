@@ -7,11 +7,21 @@ type RouterGroup struct {
 	TenantInfoRouter
 	TenantInfoReviewProcessRouter
 	TenantInfoReviewLogRouter
+	UsersRouter
+	UserApplyJoinTenantProcessRouter
+	UserApplyJoinTenantProcessFlowRouter
+	TenantInviteUserProcessRouter
+	TenantInviteUserProcessLogRouter
 }
 
 var (
-	tenantApi                  = api.ApiGroupApp.ShopApiGroup.TenantApi
-	tenantInfoApi              = api.ApiGroupApp.ShopApiGroup.TenantInfoApi
-	tenantInfoReviewProcessApi = api.ApiGroupApp.ShopApiGroup.TenantInfoReviewProcessApi
-	tenantInfoReviewLogApi     = api.ApiGroupApp.ShopApiGroup.TenantInfoReviewLogApi
+	tenantApi                         = api.ApiGroupApp.ShopApiGroup.TenantApi
+	tenantInfoApi                     = api.ApiGroupApp.ShopApiGroup.TenantInfoApi
+	tenantInfoReviewProcessApi        = api.ApiGroupApp.ShopApiGroup.TenantInfoReviewProcessApi
+	tenantInfoReviewLogApi            = api.ApiGroupApp.ShopApiGroup.TenantInfoReviewLogApi
+	usersApi                          = api.ApiGroupApp.ShopApiGroup.UsersApi
+	userApplyJoinTenantProcessApi     = api.ApiGroupApp.ShopApiGroup.UserApplyJoinTenantProcessApi
+	userApplyJoinTenantProcessFlowApi = api.ApiGroupApp.ShopApiGroup.UserApplyJoinTenantProcessFlowApi
+	tenantInviteUserProcessApi        = api.ApiGroupApp.ShopApiGroup.TenantInviteUserProcessApi
+	tenantInviteUserProcessLogApi     = api.ApiGroupApp.ShopApiGroup.TenantInviteUserProcessLogApi
 )

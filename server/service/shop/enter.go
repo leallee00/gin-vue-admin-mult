@@ -5,4 +5,9 @@ type ServiceGroup struct {
 	TenantInfoService
 	TenantInfoReviewProcessService
 	TenantInfoReviewLogService
+	UsersService
+	UserApplyJoinTenantProcessService
+	UserApplyJoinTenantProcessFlowService
+	TenantInviteUserProcessService
+	TenantInviteUserProcessLogService
 }
