@@ -14,6 +14,10 @@
  Date: 22/08/2024 16:45:02
 */
 
+CREATE DATABASE IF NOT EXISTS `shop` CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_bin';
+
+USE `shop`;
+
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 

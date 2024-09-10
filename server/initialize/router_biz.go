@@ -24,6 +24,10 @@ func initBizRouter(routers ...*gin.RouterGroup) {
 		shopRouter.InitUserApplyJoinTenantProcessFlowRouter(privateGroup, publicGroup)
 		shopRouter.InitTenantInviteUserProcessRouter(privateGroup, publicGroup)
 		shopRouter.InitTenantInviteUserProcessLogRouter(privateGroup, publicGroup)
+		shopRouter.InitTenantUserRelRouter(privateGroup, publicGroup)
+		shopRouter.InitAuthConfigRouter(privateGroup, publicGroup)
+		shopRouter.InitAuthRouter(privateGroup, publicGroup)
+		shopRouter.InitUserAuthInfoRouter(privateGroup, publicGroup)
 	}
 }
 

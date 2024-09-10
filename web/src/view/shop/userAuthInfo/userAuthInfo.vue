@@ -16,23 +16,16 @@
       <el-date-picker v-model="searchInfo.endCreatedAt" type="datetime" placeholder="结束日期" :disabled-date="time=> searchInfo.startCreatedAt ? time.getTime() < searchInfo.startCreatedAt.getTime() : false"></el-date-picker>
       </el-form-item>
       
-        <el-form-item label="操作原因" prop="desc">
-         <el-input v-model="searchInfo.desc" placeholder="搜索条件" />
+        <el-form-item label="紧急联系人姓名" prop="emergencyContactName">
+         <el-input v-model="searchInfo.emergencyContactName" placeholder="搜索条件" />
 
         </el-form-item>
-        <el-form-item label="操作者id" prop="optUserId">
-            
-             <el-input v-model.number="searchInfo.optUserId" placeholder="搜索条件" />
+        <el-form-item label="紧急联系人手机号码" prop="emergencyContactPhone">
+         <el-input v-model="searchInfo.emergencyContactPhone" placeholder="搜索条件" />
 
         </el-form-item>
-           <el-form-item label="处理进度，字典定义： 0：提交申请，1通过申请，2拒绝申请" prop="process">
-            <el-select v-model="searchInfo.process" clearable placeholder="请选择" @clear="()=>{searchInfo.process=undefined}">
-              <el-option v-for="(item,key) in user_apply_tenant_processOptions" :key="key" :label="item.label" :value="item.value" />
-            </el-select>
-            </el-form-item>
-        <el-form-item label="租户id" prop="tenantId">
-            
-             <el-input v-model.number="searchInfo.tenantId" placeholder="搜索条件" />
+        <el-form-item label="身份证号码" prop="idCardNo">
+         <el-input v-model="searchInfo.idCardNo" placeholder="搜索条件" />
 
         </el-form-item>
         <el-form-item label="用户id" prop="userId">
@@ -72,18 +65,15 @@
             <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>
         </el-table-column>
         
-        <el-table-column align="left" label="操作原因" prop="desc" width="120" />
-        <el-table-column align="left" label="操作者id" prop="optUserId" width="120" />
-        <el-table-column align="left" label="处理进度，字典定义： 0：提交申请，1通过申请，2拒绝申请" prop="process" width="120">
-            <template #default="scope">
-            {{ filterDict(scope.row.process,user_apply_tenant_processOptions) }}
-            </template>
-        </el-table-column>
-        <el-table-column align="left" label="租户id" prop="tenantId" width="120" />
+        <el-table-column align="left" label="紧急联系人姓名" prop="emergencyContactName" width="120" />
+        <el-table-column align="left" label="紧急联系人手机号码" prop="emergencyContactPhone" width="120" />
+        <el-table-column align="left" label="身份证反面" prop="idCardBack" width="120" />
+        <el-table-column align="left" label="身份证正面图片" prop="idCardFront" width="120" />
+        <el-table-column align="left" label="身份证号码" prop="idCardNo" width="120" />
         <el-table-column align="left" label="用户id" prop="userId" width="120" />
         <el-table-column align="left" label="操作" fixed="right" min-width="240">
             <template #default="scope">
-            <el-button type="primary" link icon="edit" class="table-button" @click="updateUserApplyJoinTenantProcessFunc(scope.row)">变更</el-button>
+            <el-button type="primary" link icon="edit" class="table-button" @click="updateUserAuthInfoFunc(scope.row)">变更</el-button>
             <el-button type="primary" link icon="delete" @click="deleteRow(scope.row)">删除</el-button>
             </template>
         </el-table-column>
@@ -112,19 +102,20 @@
             </template>
 
           <el-form :model="formData" label-position="top" ref="elFormRef" :rules="rule" label-width="80px">
-            <el-form-item label="操作原因:"  prop="desc" >
-              <el-input v-model="formData.desc" :clearable="true"  placeholder="请输入操作原因" />
+            <el-form-item label="紧急联系人姓名:"  prop="emergencyContactName" >
+              <el-input v-model="formData.emergencyContactName" :clearable="true"  placeholder="请输入紧急联系人姓名" />
             </el-form-item>
-            <el-form-item label="操作者id:"  prop="optUserId" >
-              <el-input v-model.number="formData.optUserId" :clearable="true" placeholder="请输入操作者id" />
+            <el-form-item label="紧急联系人手机号码:"  prop="emergencyContactPhone" >
+              <el-input v-model="formData.emergencyContactPhone" :clearable="true"  placeholder="请输入紧急联系人手机号码" />
             </el-form-item>
-            <el-form-item label="处理进度，字典定义： 0：提交申请，1通过申请，2拒绝申请:"  prop="process" >
-              <el-select v-model="formData.process" placeholder="请选择处理进度，字典定义： 0：提交申请，1通过申请，2拒绝申请" style="width:100%" :clearable="true" >
-                <el-option v-for="(item,key) in user_apply_tenant_processOptions" :key="key" :label="item.label" :value="item.value" />
-              </el-select>
+            <el-form-item label="身份证反面:"  prop="idCardBack" >
+              <el-input v-model="formData.idCardBack" :clearable="true"  placeholder="请输入身份证反面" />
             </el-form-item>
-            <el-form-item label="租户id:"  prop="tenantId" >
-              <el-input v-model.number="formData.tenantId" :clearable="true" placeholder="请输入租户id" />
+            <el-form-item label="身份证正面图片:"  prop="idCardFront" >
+              <el-input v-model="formData.idCardFront" :clearable="true"  placeholder="请输入身份证正面图片" />
+            </el-form-item>
+            <el-form-item label="身份证号码:"  prop="idCardNo" >
+              <el-input v-model="formData.idCardNo" :clearable="true"  placeholder="请输入身份证号码" />
             </el-form-item>
             <el-form-item label="用户id:"  prop="userId" >
               <el-input v-model.number="formData.userId" :clearable="true" placeholder="请输入用户id" />
@@ -136,13 +127,13 @@
 
 <script setup>
 import {
-  createUserApplyJoinTenantProcess,
-  deleteUserApplyJoinTenantProcess,
-  deleteUserApplyJoinTenantProcessByIds,
-  updateUserApplyJoinTenantProcess,
-  findUserApplyJoinTenantProcess,
-  getUserApplyJoinTenantProcessList
-} from '@/api/shop/userApplyJoinTenantProcess'
+  createUserAuthInfo,
+  deleteUserAuthInfo,
+  deleteUserAuthInfoByIds,
+  updateUserAuthInfo,
+  findUserAuthInfo,
+  getUserAuthInfoList
+} from '@/api/shop/userAuthInfo'
 
 // 全量引入格式化工具 请按需保留
 import { getDictFunc, formatDate, formatBoolean, filterDict ,filterDataSource, ReturnArrImg, onDownloadFile } from '@/utils/format'
@@ -150,19 +141,19 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { ref, reactive } from 'vue'
 
 defineOptions({
-    name: 'UserApplyJoinTenantProcess'
+    name: 'UserAuthInfo'
 })
 
 // 控制更多查询条件显示/隐藏状态
 const showAllQuery = ref(false)
 
 // 自动化生成的字典（可能为空）以及字段
-const user_apply_tenant_processOptions = ref([])
 const formData = ref({
-        desc: '',
-        optUserId: undefined,
-        process: '',
-        tenantId: undefined,
+        emergencyContactName: '',
+        emergencyContactPhone: '',
+        idCardBack: '',
+        idCardFront: '',
+        idCardNo: '',
         userId: undefined,
         })
 
@@ -228,7 +219,7 @@ const handleCurrentChange = (val) => {
 
 // 查询
 const getTableData = async() => {
-  const table = await getUserApplyJoinTenantProcessList({ page: page.value, pageSize: pageSize.value, ...searchInfo.value })
+  const table = await getUserAuthInfoList({ page: page.value, pageSize: pageSize.value, ...searchInfo.value })
   if (table.code === 0) {
     tableData.value = table.data.list
     total.value = table.data.total
@@ -243,7 +234,6 @@ getTableData()
 
 // 获取需要的字典 可能为空 按需保留
 const setOptions = async () =>{
-    user_apply_tenant_processOptions.value = await getDictFunc('user_apply_tenant_process')
 }
 
 // 获取需要的字典 可能为空 按需保留
@@ -264,7 +254,7 @@ const deleteRow = (row) => {
         cancelButtonText: '取消',
         type: 'warning'
     }).then(() => {
-            deleteUserApplyJoinTenantProcessFunc(row)
+            deleteUserAuthInfoFunc(row)
         })
     }
 
@@ -287,7 +277,7 @@ const onDelete = async() => {
         multipleSelection.value.map(item => {
           IDs.push(item.ID)
         })
-      const res = await deleteUserApplyJoinTenantProcessByIds({ IDs })
+      const res = await deleteUserAuthInfoByIds({ IDs })
       if (res.code === 0) {
         ElMessage({
           type: 'success',
@@ -305,8 +295,8 @@ const onDelete = async() => {
 const type = ref('')
 
 // 更新行
-const updateUserApplyJoinTenantProcessFunc = async(row) => {
-    const res = await findUserApplyJoinTenantProcess({ ID: row.ID })
+const updateUserAuthInfoFunc = async(row) => {
+    const res = await findUserAuthInfo({ ID: row.ID })
     type.value = 'update'
     if (res.code === 0) {
         formData.value = res.data
@@ -316,8 +306,8 @@ const updateUserApplyJoinTenantProcessFunc = async(row) => {
 
 
 // 删除行
-const deleteUserApplyJoinTenantProcessFunc = async (row) => {
-    const res = await deleteUserApplyJoinTenantProcess({ ID: row.ID })
+const deleteUserAuthInfoFunc = async (row) => {
+    const res = await deleteUserAuthInfo({ ID: row.ID })
     if (res.code === 0) {
         ElMessage({
                 type: 'success',
@@ -343,28 +333,28 @@ const openDialog = () => {
 const closeDialog = () => {
     dialogFormVisible.value = false
     formData.value = {
-        desc: '',
-        optUserId: undefined,
-        process: '',
-        tenantId: undefined,
+        emergencyContactName: '',
+        emergencyContactPhone: '',
+        idCardBack: '',
+        idCardFront: '',
+        idCardNo: '',
         userId: undefined,
         }
 }
 // 弹窗确定
 const enterDialog = async () => {
-  console.log("1````", formData.value)
      elFormRef.value?.validate( async (valid) => {
              if (!valid) return
               let res
               switch (type.value) {
                 case 'create':
-                  res = await createUserApplyJoinTenantProcess(formData.value)
+                  res = await createUserAuthInfo(formData.value)
                   break
                 case 'update':
-                  res = await updateUserApplyJoinTenantProcess(formData.value)
+                  res = await updateUserAuthInfo(formData.value)
                   break
                 default:
-                  res = await createUserApplyJoinTenantProcess(formData.value)
+                  res = await createUserAuthInfo(formData.value)
                   break
               }
               if (res.code === 0) {

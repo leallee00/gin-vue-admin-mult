@@ -68,15 +68,15 @@
         @selection-change="handleSelectionChange"
         >
         <el-table-column type="selection" width="55" />
-        
-        <el-table-column align="left" label="日期" prop="createdAt" width="180">
+        <el-table-column align="left" label="编号" prop="ID" width="60" />
+        <el-table-column align="left" label="日期" prop="createdAt" width="160">
             <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>
         </el-table-column>
         
         <el-table-column align="left" label="用户头像" prop="avatar" width="120" />
         <el-table-column align="left" label="用户邮箱" prop="email" width="120" />
         <el-table-column align="left" label="用户昵称" prop="nickName" width="120" />
-        <el-table-column align="left" label="用户登录密码" prop="password" width="120" />
+        <!-- <el-table-column align="left" label="用户登录密码" prop="password" width="120" /> -->
         <el-table-column align="left" label="用户手机号" prop="phone" width="120" />
         <el-table-column align="left" label="用户状态 0:正常 1冻结" prop="status" width="120">
             <template #default="scope">
@@ -131,7 +131,7 @@
             <el-form-item label="用户手机号:"  prop="phone" >
               <el-input v-model="formData.phone" :clearable="true"  placeholder="请输入用户手机号" />
             </el-form-item>
-            <el-form-item label="用户状态 0:正常 1冻结:"  prop="status" >
+            <el-form-item v-if="type != 'create'" label="用户状态 0:正常 1冻结:"  prop="status" >
               <el-select v-model="formData.status" placeholder="请选择用户状态 0:正常 1冻结" style="width:100%" :clearable="true" >
                 <el-option v-for="(item,key) in user_statusOptions" :key="key" :label="item.label" :value="item.value" />
               </el-select>
@@ -139,7 +139,7 @@
             <el-form-item label="用户登录名:"  prop="username" >
               <el-input v-model="formData.username" :clearable="true"  placeholder="请输入用户登录名" />
             </el-form-item>
-            <el-form-item label="用户UUID:"  prop="uuid" >
+            <el-form-item v-if="type != 'create'" label="用户UUID:"  prop="uuid" >
               <el-input v-model="formData.uuid" :clearable="true"  placeholder="请输入用户UUID" />
             </el-form-item>
           </el-form>

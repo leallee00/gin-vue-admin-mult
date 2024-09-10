@@ -2,44 +2,11 @@
   <div>
     <div class="gva-search-box">
       <el-form ref="elSearchFormRef" :inline="true" :model="searchInfo" class="demo-form-inline" :rules="searchRule" @keyup.enter="onSubmit">
-      <el-form-item label="创建日期" prop="createdAt">
-      <template #label>
-        <span>
-          创建日期
-          <el-tooltip content="搜索范围是开始日期（包含）至结束日期（不包含）">
-            <el-icon><QuestionFilled /></el-icon>
-          </el-tooltip>
-        </span>
-      </template>
-      <el-date-picker v-model="searchInfo.startCreatedAt" type="datetime" placeholder="开始日期" :disabled-date="time=> searchInfo.endCreatedAt ? time.getTime() > searchInfo.endCreatedAt.getTime() : false"></el-date-picker>
-       —
-      <el-date-picker v-model="searchInfo.endCreatedAt" type="datetime" placeholder="结束日期" :disabled-date="time=> searchInfo.startCreatedAt ? time.getTime() < searchInfo.startCreatedAt.getTime() : false"></el-date-picker>
-      </el-form-item>
-      
-        <el-form-item label="操作原因" prop="desc">
-         <el-input v-model="searchInfo.desc" placeholder="搜索条件" />
-
-        </el-form-item>
-        <el-form-item label="操作者id" prop="optUserId">
-            
-             <el-input v-model.number="searchInfo.optUserId" placeholder="搜索条件" />
-
-        </el-form-item>
-           <el-form-item label="处理进度，字典定义： 0：提交申请，1通过申请，2拒绝申请" prop="process">
-            <el-select v-model="searchInfo.process" clearable placeholder="请选择" @clear="()=>{searchInfo.process=undefined}">
-              <el-option v-for="(item,key) in user_apply_tenant_processOptions" :key="key" :label="item.label" :value="item.value" />
+           <el-form-item label="三方服务名称" prop="service">
+            <el-select v-model="searchInfo.service" clearable placeholder="请选择" @clear="()=>{searchInfo.service=undefined}">
+              <el-option v-for="(item,key) in third_authOptions" :key="key" :label="item.label" :value="item.value" />
             </el-select>
             </el-form-item>
-        <el-form-item label="租户id" prop="tenantId">
-            
-             <el-input v-model.number="searchInfo.tenantId" placeholder="搜索条件" />
-
-        </el-form-item>
-        <el-form-item label="用户id" prop="userId">
-            
-             <el-input v-model.number="searchInfo.userId" placeholder="搜索条件" />
-
-        </el-form-item>
 
         <template v-if="showAllQuery">
           <!-- 将需要控制显示状态的查询条件添加到此范围内 -->
@@ -63,27 +30,27 @@
         style="width: 100%"
         tooltip-effect="dark"
         :data="tableData"
-        row-key="ID"
+        row-key="id"
         @selection-change="handleSelectionChange"
+        @sort-change="sortChange"
         >
         <el-table-column type="selection" width="55" />
         
-        <el-table-column align="left" label="日期" prop="createdAt" width="180">
-            <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>
-        </el-table-column>
-        
-        <el-table-column align="left" label="操作原因" prop="desc" width="120" />
-        <el-table-column align="left" label="操作者id" prop="optUserId" width="120" />
-        <el-table-column align="left" label="处理进度，字典定义： 0：提交申请，1通过申请，2拒绝申请" prop="process" width="120">
+        <el-table-column align="left" label="三方授权码" prop="accessKeyId" width="120" />
+        <el-table-column align="left" label="三方授权密码" prop="accessSecret" width="120" />
+        <el-table-column align="left" label="三方提供的认证链接" prop="authUrl" width="120" />
+        <el-table-column align="left" label="系统提供的回调地址，第三方认证后回调" prop="callBackUrl" width="120" />
+        <el-table-column align="left" label="详情" prop="description" width="120" />
+        <el-table-column align="left" label="编号" prop="id" width="120" />
+        <el-table-column align="left" label="三方服务名称" prop="service" width="120">
             <template #default="scope">
-            {{ filterDict(scope.row.process,user_apply_tenant_processOptions) }}
+            {{ filterDict(scope.row.service,third_authOptions) }}
             </template>
         </el-table-column>
-        <el-table-column align="left" label="租户id" prop="tenantId" width="120" />
-        <el-table-column align="left" label="用户id" prop="userId" width="120" />
+        <el-table-column sortable align="left" label="三方服务编号" prop="serviceType" width="120" />
         <el-table-column align="left" label="操作" fixed="right" min-width="240">
             <template #default="scope">
-            <el-button type="primary" link icon="edit" class="table-button" @click="updateUserApplyJoinTenantProcessFunc(scope.row)">变更</el-button>
+            <el-button type="primary" link icon="edit" class="table-button" @click="updateAuthConfigFunc(scope.row)">变更</el-button>
             <el-button type="primary" link icon="delete" @click="deleteRow(scope.row)">删除</el-button>
             </template>
         </el-table-column>
@@ -112,22 +79,31 @@
             </template>
 
           <el-form :model="formData" label-position="top" ref="elFormRef" :rules="rule" label-width="80px">
-            <el-form-item label="操作原因:"  prop="desc" >
-              <el-input v-model="formData.desc" :clearable="true"  placeholder="请输入操作原因" />
+            <el-form-item label="三方授权码:"  prop="accessKeyId" >
+              <el-input v-model="formData.accessKeyId" :clearable="true"  placeholder="请输入三方授权码" />
             </el-form-item>
-            <el-form-item label="操作者id:"  prop="optUserId" >
-              <el-input v-model.number="formData.optUserId" :clearable="true" placeholder="请输入操作者id" />
+            <el-form-item label="三方授权密码:"  prop="accessSecret" >
+              <el-input v-model="formData.accessSecret" :clearable="true"  placeholder="请输入三方授权密码" />
             </el-form-item>
-            <el-form-item label="处理进度，字典定义： 0：提交申请，1通过申请，2拒绝申请:"  prop="process" >
-              <el-select v-model="formData.process" placeholder="请选择处理进度，字典定义： 0：提交申请，1通过申请，2拒绝申请" style="width:100%" :clearable="true" >
-                <el-option v-for="(item,key) in user_apply_tenant_processOptions" :key="key" :label="item.label" :value="item.value" />
+            <el-form-item label="三方提供的认证链接:"  prop="authUrl" >
+              <el-input v-model="formData.authUrl" :clearable="true"  placeholder="请输入三方提供的认证链接" />
+            </el-form-item>
+            <el-form-item label="系统提供的回调地址，第三方认证后回调:"  prop="callBackUrl" >
+              <el-input v-model="formData.callBackUrl" :clearable="true"  placeholder="请输入系统提供的回调地址，第三方认证后回调" />
+            </el-form-item>
+            <el-form-item label="详情:"  prop="description" >
+              <el-input v-model="formData.description" :clearable="true"  placeholder="请输入详情" />
+            </el-form-item>
+            <el-form-item label="编号:"  prop="id" >
+              <el-input v-model.number="formData.id" :clearable="true" placeholder="请输入编号" />
+            </el-form-item>
+            <el-form-item label="三方服务名称:"  prop="service" >
+              <el-select v-model="formData.service" placeholder="请选择三方服务名称" style="width:100%" :clearable="true" >
+                <el-option v-for="(item,key) in third_authOptions" :key="key" :label="item.label" :value="item.value" />
               </el-select>
             </el-form-item>
-            <el-form-item label="租户id:"  prop="tenantId" >
-              <el-input v-model.number="formData.tenantId" :clearable="true" placeholder="请输入租户id" />
-            </el-form-item>
-            <el-form-item label="用户id:"  prop="userId" >
-              <el-input v-model.number="formData.userId" :clearable="true" placeholder="请输入用户id" />
+            <el-form-item label="三方服务编号:"  prop="serviceType" >
+              <el-input v-model.number="formData.serviceType" :clearable="true" placeholder="请输入三方服务编号" />
             </el-form-item>
           </el-form>
     </el-drawer>
@@ -136,13 +112,13 @@
 
 <script setup>
 import {
-  createUserApplyJoinTenantProcess,
-  deleteUserApplyJoinTenantProcess,
-  deleteUserApplyJoinTenantProcessByIds,
-  updateUserApplyJoinTenantProcess,
-  findUserApplyJoinTenantProcess,
-  getUserApplyJoinTenantProcessList
-} from '@/api/shop/userApplyJoinTenantProcess'
+  createAuthConfig,
+  deleteAuthConfig,
+  deleteAuthConfigByIds,
+  updateAuthConfig,
+  findAuthConfig,
+  getAuthConfigList
+} from '@/api/shop/authConfig'
 
 // 全量引入格式化工具 请按需保留
 import { getDictFunc, formatDate, formatBoolean, filterDict ,filterDataSource, ReturnArrImg, onDownloadFile } from '@/utils/format'
@@ -150,26 +126,46 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { ref, reactive } from 'vue'
 
 defineOptions({
-    name: 'UserApplyJoinTenantProcess'
+    name: 'AuthConfig'
 })
 
 // 控制更多查询条件显示/隐藏状态
 const showAllQuery = ref(false)
 
 // 自动化生成的字典（可能为空）以及字段
-const user_apply_tenant_processOptions = ref([])
+const third_authOptions = ref([])
 const formData = ref({
-        desc: '',
-        optUserId: undefined,
-        process: '',
-        tenantId: undefined,
-        userId: undefined,
+        accessKeyId: '',
+        accessSecret: '',
+        authUrl: '',
+        callBackUrl: '',
+        description: '',
+        id: undefined,
+        service: '',
+        serviceType: undefined,
         })
 
 
 
 // 验证规则
 const rule = reactive({
+               service : [{
+                   required: true,
+                   message: '',
+                   trigger: ['input','blur'],
+               },
+               {
+                   whitespace: true,
+                   message: '不能只输入空格',
+                   trigger: ['input', 'blur'],
+              }
+              ],
+               serviceType : [{
+                   required: true,
+                   message: '',
+                   trigger: ['input','blur'],
+               },
+              ],
 })
 
 const searchRule = reactive({
@@ -197,6 +193,21 @@ const total = ref(0)
 const pageSize = ref(10)
 const tableData = ref([])
 const searchInfo = ref({})
+// 排序
+const sortChange = ({ prop, order }) => {
+  const sortMap = {
+            serviceType: 'service_type',
+  }
+
+  let sort = sortMap[prop]
+  if(!sort){
+   sort = prop.replace(/[A-Z]/g, match => `_${match.toLowerCase()}`)
+  }
+
+  searchInfo.value.sort = sort
+  searchInfo.value.order = order
+  getTableData()
+}
 
 // 重置
 const onReset = () => {
@@ -228,7 +239,7 @@ const handleCurrentChange = (val) => {
 
 // 查询
 const getTableData = async() => {
-  const table = await getUserApplyJoinTenantProcessList({ page: page.value, pageSize: pageSize.value, ...searchInfo.value })
+  const table = await getAuthConfigList({ page: page.value, pageSize: pageSize.value, ...searchInfo.value })
   if (table.code === 0) {
     tableData.value = table.data.list
     total.value = table.data.total
@@ -243,7 +254,7 @@ getTableData()
 
 // 获取需要的字典 可能为空 按需保留
 const setOptions = async () =>{
-    user_apply_tenant_processOptions.value = await getDictFunc('user_apply_tenant_process')
+    third_authOptions.value = await getDictFunc('third_auth')
 }
 
 // 获取需要的字典 可能为空 按需保留
@@ -264,7 +275,7 @@ const deleteRow = (row) => {
         cancelButtonText: '取消',
         type: 'warning'
     }).then(() => {
-            deleteUserApplyJoinTenantProcessFunc(row)
+            deleteAuthConfigFunc(row)
         })
     }
 
@@ -275,7 +286,7 @@ const onDelete = async() => {
     cancelButtonText: '取消',
     type: 'warning'
   }).then(async() => {
-      const IDs = []
+      const ids = []
       if (multipleSelection.value.length === 0) {
         ElMessage({
           type: 'warning',
@@ -285,15 +296,15 @@ const onDelete = async() => {
       }
       multipleSelection.value &&
         multipleSelection.value.map(item => {
-          IDs.push(item.ID)
+          ids.push(item.id)
         })
-      const res = await deleteUserApplyJoinTenantProcessByIds({ IDs })
+      const res = await deleteAuthConfigByIds({ ids })
       if (res.code === 0) {
         ElMessage({
           type: 'success',
           message: '删除成功'
         })
-        if (tableData.value.length === IDs.length && page.value > 1) {
+        if (tableData.value.length === ids.length && page.value > 1) {
           page.value--
         }
         getTableData()
@@ -305,8 +316,8 @@ const onDelete = async() => {
 const type = ref('')
 
 // 更新行
-const updateUserApplyJoinTenantProcessFunc = async(row) => {
-    const res = await findUserApplyJoinTenantProcess({ ID: row.ID })
+const updateAuthConfigFunc = async(row) => {
+    const res = await findAuthConfig({ id: row.id })
     type.value = 'update'
     if (res.code === 0) {
         formData.value = res.data
@@ -316,8 +327,8 @@ const updateUserApplyJoinTenantProcessFunc = async(row) => {
 
 
 // 删除行
-const deleteUserApplyJoinTenantProcessFunc = async (row) => {
-    const res = await deleteUserApplyJoinTenantProcess({ ID: row.ID })
+const deleteAuthConfigFunc = async (row) => {
+    const res = await deleteAuthConfig({ id: row.id })
     if (res.code === 0) {
         ElMessage({
                 type: 'success',
@@ -343,28 +354,30 @@ const openDialog = () => {
 const closeDialog = () => {
     dialogFormVisible.value = false
     formData.value = {
-        desc: '',
-        optUserId: undefined,
-        process: '',
-        tenantId: undefined,
-        userId: undefined,
+        accessKeyId: '',
+        accessSecret: '',
+        authUrl: '',
+        callBackUrl: '',
+        description: '',
+        id: undefined,
+        service: '',
+        serviceType: undefined,
         }
 }
 // 弹窗确定
 const enterDialog = async () => {
-  console.log("1````", formData.value)
      elFormRef.value?.validate( async (valid) => {
              if (!valid) return
               let res
               switch (type.value) {
                 case 'create':
-                  res = await createUserApplyJoinTenantProcess(formData.value)
+                  res = await createAuthConfig(formData.value)
                   break
                 case 'update':
-                  res = await updateUserApplyJoinTenantProcess(formData.value)
+                  res = await updateAuthConfig(formData.value)
                   break
                 default:
-                  res = await createUserApplyJoinTenantProcess(formData.value)
+                  res = await createAuthConfig(formData.value)
                   break
               }
               if (res.code === 0) {

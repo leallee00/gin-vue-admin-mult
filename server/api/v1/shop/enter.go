@@ -12,6 +12,10 @@ type ApiGroup struct {
 	UserApplyJoinTenantProcessFlowApi
 	TenantInviteUserProcessApi
 	TenantInviteUserProcessLogApi
+	TenantUserRelApi
+	AuthConfigApi
+	AuthApi
+	UserAuthInfoApi
 }
 
 var (
@@ -24,4 +28,8 @@ var (
 	userApplyJoinTenantProcessFlowService = service.ServiceGroupApp.ShopServiceGroup.UserApplyJoinTenantProcessFlowService
 	tenantInviteUserProcessService        = service.ServiceGroupApp.ShopServiceGroup.TenantInviteUserProcessService
 	tenantInviteUserProcessLogService     = service.ServiceGroupApp.ShopServiceGroup.TenantInviteUserProcessLogService
+	tenantUserRelService                  = service.ServiceGroupApp.ShopServiceGroup.TenantUserRelService
+	authConfigService                     = service.ServiceGroupApp.ShopServiceGroup.AuthConfigService
+	authService                           = service.ServiceGroupApp.ShopServiceGroup.AuthService
+	userAuthInfoService                   = service.ServiceGroupApp.ShopServiceGroup.UserAuthInfoService
 )

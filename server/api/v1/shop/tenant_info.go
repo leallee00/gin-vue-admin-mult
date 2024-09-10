@@ -2,14 +2,14 @@ package shop
 
 import (
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
-    "github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
-    "github.com/flipped-aurora/gin-vue-admin/server/model/shop"
-    shopReq "github.com/flipped-aurora/gin-vue-admin/server/model/shop/request"
-    "github.com/gin-gonic/gin"
-    "go.uber.org/zap"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/shop"
+	shopReq "github.com/flipped-aurora/gin-vue-admin/server/model/shop/request"
+	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
-type TenantInfoApi struct {}
+type TenantInfoApi struct{}
 
 // CreateTenantInfo 创建tenantInfo表
 // @Tags TenantInfo
@@ -29,11 +29,11 @@ func (tenantInfoApi *TenantInfoApi) CreateTenantInfo(c *gin.Context) {
 	}
 	err = tenantInfoService.CreateTenantInfo(&tenantInfo)
 	if err != nil {
-        global.GVA_LOG.Error("创建失败!", zap.Error(err))
+		global.GVA_LOG.Error("创建失败!", zap.Error(err))
 		response.FailWithMessage("创建失败", c)
 		return
 	}
-    response.OkWithMessage("创建成功", c)
+	response.OkWithMessage("创建成功", c)
 }
 
 // DeleteTenantInfo 删除tenantInfo表
@@ -49,7 +49,7 @@ func (tenantInfoApi *TenantInfoApi) DeleteTenantInfo(c *gin.Context) {
 	id := c.Query("id")
 	err := tenantInfoService.DeleteTenantInfo(id)
 	if err != nil {
-        global.GVA_LOG.Error("删除失败!", zap.Error(err))
+		global.GVA_LOG.Error("删除失败!", zap.Error(err))
 		response.FailWithMessage("删除失败", c)
 		return
 	}
@@ -68,7 +68,7 @@ func (tenantInfoApi *TenantInfoApi) DeleteTenantInfoByIds(c *gin.Context) {
 	ids := c.QueryArray("ids[]")
 	err := tenantInfoService.DeleteTenantInfoByIds(ids)
 	if err != nil {
-        global.GVA_LOG.Error("批量删除失败!", zap.Error(err))
+		global.GVA_LOG.Error("批量删除失败!", zap.Error(err))
 		response.FailWithMessage("批量删除失败", c)
 		return
 	}
@@ -88,12 +88,13 @@ func (tenantInfoApi *TenantInfoApi) UpdateTenantInfo(c *gin.Context) {
 	var tenantInfo shop.TenantInfo
 	err := c.ShouldBindJSON(&tenantInfo)
 	if err != nil {
+		global.GVA_LOG.Error("解析数据失败!", zap.Error(err), zap.Any("tenantInfo", tenantInfo))
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
 	err = tenantInfoService.UpdateTenantInfo(tenantInfo)
 	if err != nil {
-        global.GVA_LOG.Error("更新失败!", zap.Error(err))
+		global.GVA_LOG.Error("更新失败!", zap.Error(err))
 		response.FailWithMessage("更新失败", c)
 		return
 	}
@@ -113,7 +114,7 @@ func (tenantInfoApi *TenantInfoApi) FindTenantInfo(c *gin.Context) {
 	id := c.Query("id")
 	retenantInfo, err := tenantInfoService.GetTenantInfo(id)
 	if err != nil {
-        global.GVA_LOG.Error("查询失败!", zap.Error(err))
+		global.GVA_LOG.Error("查询失败!", zap.Error(err))
 		response.FailWithMessage("查询失败", c)
 		return
 	}
@@ -138,16 +139,16 @@ func (tenantInfoApi *TenantInfoApi) GetTenantInfoList(c *gin.Context) {
 	}
 	list, total, err := tenantInfoService.GetTenantInfoInfoList(pageInfo)
 	if err != nil {
-	    global.GVA_LOG.Error("获取失败!", zap.Error(err))
-        response.FailWithMessage("获取失败", c)
-        return
-    }
-    response.OkWithDetailed(response.PageResult{
-        List:     list,
-        Total:    total,
-        Page:     pageInfo.Page,
-        PageSize: pageInfo.PageSize,
-    }, "获取成功", c)
+		global.GVA_LOG.Error("获取失败!", zap.Error(err))
+		response.FailWithMessage("获取失败", c)
+		return
+	}
+	response.OkWithDetailed(response.PageResult{
+		List:     list,
+		Total:    total,
+		Page:     pageInfo.Page,
+		PageSize: pageInfo.PageSize,
+	}, "获取成功", c)
 }
 
 // GetTenantInfoPublic 不需要鉴权的tenantInfo表接口
@@ -159,9 +160,9 @@ func (tenantInfoApi *TenantInfoApi) GetTenantInfoList(c *gin.Context) {
 // @Success 200 {object} response.Response{data=object,msg=string} "获取成功"
 // @Router /tenantInfo/getTenantInfoPublic [get]
 func (tenantInfoApi *TenantInfoApi) GetTenantInfoPublic(c *gin.Context) {
-    // 此接口不需要鉴权
-    // 示例为返回了一个固定的消息接口，一般本接口用于C端服务，需要自己实现业务逻辑
-    response.OkWithDetailed(gin.H{
-       "info": "不需要鉴权的tenantInfo表接口信息",
-    }, "获取成功", c)
+	// 此接口不需要鉴权
+	// 示例为返回了一个固定的消息接口，一般本接口用于C端服务，需要自己实现业务逻辑
+	response.OkWithDetailed(gin.H{
+		"info": "不需要鉴权的tenantInfo表接口信息",
+	}, "获取成功", c)
 }

@@ -12,6 +12,10 @@ type RouterGroup struct {
 	UserApplyJoinTenantProcessFlowRouter
 	TenantInviteUserProcessRouter
 	TenantInviteUserProcessLogRouter
+	TenantUserRelRouter
+	AuthConfigRouter
+	AuthRouter
+	UserAuthInfoRouter
 }
 
 var (
@@ -24,4 +28,8 @@ var (
 	userApplyJoinTenantProcessFlowApi = api.ApiGroupApp.ShopApiGroup.UserApplyJoinTenantProcessFlowApi
 	tenantInviteUserProcessApi        = api.ApiGroupApp.ShopApiGroup.TenantInviteUserProcessApi
 	tenantInviteUserProcessLogApi     = api.ApiGroupApp.ShopApiGroup.TenantInviteUserProcessLogApi
+	tenantUserRelApi                  = api.ApiGroupApp.ShopApiGroup.TenantUserRelApi
+	authConfigApi                     = api.ApiGroupApp.ShopApiGroup.AuthConfigApi
+	authApi                           = api.ApiGroupApp.ShopApiGroup.AuthApi
+	userAuthInfoApi                   = api.ApiGroupApp.ShopApiGroup.UserAuthInfoApi
 )

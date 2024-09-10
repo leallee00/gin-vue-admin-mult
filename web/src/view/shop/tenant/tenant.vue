@@ -39,7 +39,9 @@
         </el-form-item>
         <el-form-item label="商户UUID" prop="uuid">
          <el-input v-model="searchInfo.uuid" placeholder="搜索条件" />
-
+        </el-form-item>
+        <el-form-item label="父商户id" prop="parentTenantId">
+         <el-input v-model="searchInfo.parentTenantId" placeholder="搜索条件" />
         </el-form-item>
         <el-form-item label="商户名称" prop="tenantName">
          <el-input v-model="searchInfo.tenantName" placeholder="搜索条件" />
@@ -48,6 +50,12 @@
            <el-form-item label="状态" prop="status">
             <el-select v-model="searchInfo.status" clearable placeholder="请选择" @clear="()=>{searchInfo.status=undefined}">
               <el-option v-for="(item,key) in tenantStatusOptions" :key="key" :label="item.label" :value="item.value" />
+            </el-select>
+            </el-form-item>
+
+            <el-form-item label="类型" prop="tenantType">
+            <el-select v-model="searchInfo.tenantType" clearable placeholder="请选择" @clear="()=>{searchInfo.tenantType=undefined}">
+              <el-option v-for="(item,key) in tenantTypeOptions" :key="key" :label="item.label" :value="item.value" />
             </el-select>
             </el-form-item>
 
@@ -79,27 +87,42 @@
         >
         <el-table-column type="selection" width="55" />
         
-        <el-table-column sortable align="left" label="id字段" prop="id" width="120" />
-         <el-table-column sortable align="left" label="createdAt字段" prop="createdAt" width="180">
+        <el-table-column sortable align="left" label="编号" prop="id" width="80" />
+         <el-table-column sortable align="left" label="创建" prop="createdAt" width="120">
             <template #default="scope">{{ formatDate(scope.row.createdAt) }}</template>
          </el-table-column>
-         <el-table-column sortable align="left" label="updatedAt字段" prop="updatedAt" width="180">
+         <el-table-column sortable align="left" label="更新" prop="updatedAt" width="120">
             <template #default="scope">{{ formatDate(scope.row.updatedAt) }}</template>
          </el-table-column>
-        <el-table-column align="left" label="商户UUID" prop="uuid" width="120" />
-        <el-table-column align="left" label="商户名称" prop="tenantName" width="120" />
-        <el-table-column align="left" label="访问秘钥" prop="accessKeyId" width="120" />
-        <el-table-column align="left" label="访问秘钥密码" prop="accessKeySecret" width="120" />
-        <el-table-column sortable align="left" label="状态" prop="status" width="120">
+        <el-table-column align="left" label="商户UUID" prop="uuid" width="200" />
+        <el-table-column align="left" label="父商户id" prop="parentTenantId" width="80" />
+        <el-table-column align="left" label="商户名称" prop="tenantName" width="200" />
+        <el-table-column align="left" label="访问秘钥" prop="accessKeyId" width="200" />
+        <el-table-column align="left" label="访问秘钥密码" prop="accessKeySecret" width="200" />
+        <el-table-column sortable align="left" label="状态" prop="status" width="80">
             <template #default="scope">
             {{ filterDict(scope.row.status,tenantStatusOptions) }}
             </template>
         </el-table-column>
-        <el-table-column align="left" label="主图" prop="headerImg" width="120" />
+        <el-table-column sortable align="left" label="商户类型" prop="tenantType" width="120">
+            <template #default="scope">
+            {{ filterDict(scope.row.tenantType,tenantTypeOptions) }}
+            </template>
+        </el-table-column>
+        <el-table-column sortable align="left" label="主图" prop="headerImg" width="120" >
+          <template #default="scope">
+            <el-image
+          style="width: 100px; height: 100px"
+          :src="scope.row.headerImg"
+          fit="fill"></el-image>
+            </template>
+        </el-table-column>
+
         <el-table-column align="left" label="操作" fixed="right" min-width="240">
             <template #default="scope">
             <el-button type="primary" link icon="edit" class="table-button" @click="updateTenantFunc(scope.row)">变更</el-button>
             <el-button type="primary" link icon="delete" @click="deleteRow(scope.row)">删除</el-button>
+            <el-button type="primary" link icon="edit" class="table-button" @click="tenantDetail(scope.row)">详情</el-button>
             </template>
         </el-table-column>
         </el-table>
@@ -127,7 +150,7 @@
             </template>
 
           <el-form :model="formData" label-position="top" ref="elFormRef" :rules="rule" label-width="80px">
-            <el-form-item label="id字段:"  prop="id" >
+            <!-- <el-form-item label="id字段:"  prop="id" >
               <el-input v-model.number="formData.id" :clearable="true" placeholder="请输入id字段" />
             </el-form-item>
             <el-form-item label="createdAt字段:"  prop="createdAt" >
@@ -135,22 +158,30 @@
             </el-form-item>
             <el-form-item label="updatedAt字段:"  prop="updatedAt" >
               <el-date-picker v-model="formData.updatedAt" type="date" style="width:100%" placeholder="选择日期" :clearable="true"  />
-            </el-form-item>
-            <el-form-item label="商户UUID:"  prop="uuid" >
+            </el-form-item> -->
+            <!-- <el-form-item label="商户UUID:"  prop="uuid" >
               <el-input v-model="formData.uuid" :clearable="true"  placeholder="请输入商户UUID" />
+            </el-form-item> -->
+            <el-form-item label="父商户id:"  prop="parentTenantId" >
+              <el-input v-model="formData.parentTenantId" :clearable="true"  placeholder="请输入父商户id" />
             </el-form-item>
             <el-form-item label="商户名称:"  prop="tenantName" >
               <el-input v-model="formData.tenantName" :clearable="true"  placeholder="请输入商户名称" />
             </el-form-item>
-            <el-form-item label="访问秘钥:"  prop="accessKeyId" >
+            <!-- <el-form-item label="访问秘钥:"  prop="accessKeyId" >
               <el-input v-model="formData.accessKeyId" :clearable="true"  placeholder="请输入访问秘钥" />
             </el-form-item>
             <el-form-item label="访问秘钥密码:"  prop="accessKeySecret" >
               <el-input v-model="formData.accessKeySecret" :clearable="true"  placeholder="请输入访问秘钥密码" />
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item label="状态:"  prop="status" >
               <el-select v-model="formData.status" placeholder="请选择状态" style="width:100%" :clearable="true" >
                 <el-option v-for="(item,key) in tenantStatusOptions" :key="key" :label="item.label" :value="item.value" />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="商户类型:"  prop="tenantType" >
+              <el-select v-model="formData.tenantType" placeholder="请选择类型" style="width:100%" :clearable="true" >
+                <el-option v-for="(item,key) in tenantTypeOptions" :key="key" :label="item.label" :value="item.value" />
               </el-select>
             </el-form-item>
             <el-form-item label="主图:"  prop="headerImg" >
@@ -175,6 +206,9 @@ import {
 import { getDictFunc, formatDate, formatBoolean, filterDict ,filterDataSource, ReturnArrImg, onDownloadFile } from '@/utils/format'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { ref, reactive } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 defineOptions({
     name: 'Tenant'
@@ -185,11 +219,14 @@ const showAllQuery = ref(false)
 
 // 自动化生成的字典（可能为空）以及字段
 const tenantStatusOptions = ref([])
+const tenantTypeOptions = ref([])
 const formData = ref({
         id: undefined,
         createdAt: new Date(),
         updatedAt: new Date(),
         uuid: '',
+        parentTenantId:0,
+        tenantType:'',
         tenantName: '',
         accessKeyId: '',
         accessKeySecret: '',
@@ -326,6 +363,9 @@ getTableData()
 // 获取需要的字典 可能为空 按需保留
 const setOptions = async () =>{
     tenantStatusOptions.value = await getDictFunc('tenantStatus')
+    tenantTypeOptions.value = await getDictFunc('tenant_type')
+    
+    console.log("tenantTypeOptions=", tenantTypeOptions)
 }
 
 // 获取需要的字典 可能为空 按需保留
@@ -396,6 +436,15 @@ const updateTenantFunc = async(row) => {
     }
 }
 
+const tenantDetail = async(row)=>{
+  // 导航到详情页面
+  // name: "autoCodeEdit",
+  //     params: {
+  //   id: row.ID,
+  // },
+  router.push({ name: "tenantInfo",params: {"tenantId":row.tenantId} })
+}
+
 
 // 删除行
 const deleteTenantFunc = async (row) => {
@@ -429,6 +478,8 @@ const closeDialog = () => {
         createdAt: new Date(),
         updatedAt: new Date(),
         uuid: '',
+        parentTenantId:0,
+        TenantType:0,
         tenantName: '',
         accessKeyId: '',
         accessKeySecret: '',
@@ -438,6 +489,7 @@ const closeDialog = () => {
 }
 // 弹窗确定
 const enterDialog = async () => {
+    console.log("111111111", formData.value)
      elFormRef.value?.validate( async (valid) => {
              if (!valid) return
               let res

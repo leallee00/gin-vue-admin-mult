@@ -98,6 +98,12 @@
 
         </el-form-item>
 
+        <el-form-item label="状态" prop="status">
+            <el-select v-model="searchInfo.status" clearable placeholder="请选择" @clear="()=>{searchInfo.status=undefined}">
+              <el-option v-for="(item,key) in tenantStatusOptions" :key="key" :label="item.label" :value="item.value" />
+            </el-select>
+            </el-form-item>
+
         <template v-if="showAllQuery">
           <!-- 将需要控制显示状态的查询条件添加到此范围内 -->
         </template>
@@ -125,7 +131,7 @@
         >
         <el-table-column type="selection" width="55" />
         
-        <el-table-column align="left" label="数据编号" prop="id" width="120" />
+        <el-table-column align="left" label="编号" prop="id" width="120" />
         <el-table-column align="left" label="租户id" prop="tenantId" width="120" />
          <el-table-column align="left" label="创建时间" prop="createdAt" width="180">
             <template #default="scope">{{ formatDate(scope.row.createdAt) }}</template>
@@ -162,7 +168,14 @@
         <el-table-column align="left" label="支付宝账号" prop="alipayAccount" width="120" />
         <el-table-column align="left" label="微信用户名" prop="wechatName" width="120" />
         <el-table-column align="left" label="微信账号" prop="wechatAccount" width="120" />
-        <el-table-column align="left" label="状态" prop="status" width="120" />
+        <el-table-column sortable align="left" label="状态" prop="status" width="80">
+            <template #default="scope">
+            {{ filterDict(scope.row.status,tenantStatusOptions) }}
+            </template>
+        </el-table-column>
+        <!-- <el-table-column align="left" label="状态" prop="status" width="120" >
+          <el-option v-for="(item,key) in tenantStatusOptions" :key="key" :label="item.label" :value="item.value" />
+        </el-table-column> -->
         <el-table-column align="left" label="操作" fixed="right" min-width="240">
             <template #default="scope">
             <el-button type="primary" link icon="edit" class="table-button" @click="updateTenantInfoFunc(scope.row)">变更</el-button>
@@ -194,18 +207,18 @@
             </template>
 
           <el-form :model="formData" label-position="top" ref="elFormRef" :rules="rule" label-width="80px">
-            <el-form-item label="数据编号:"  prop="id" >
+            <!-- <el-form-item label="编号:"  prop="id" >
               <el-input v-model.number="formData.id" :clearable="true" placeholder="请输入数据编号" />
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item label="租户id:"  prop="tenantId" >
               <el-input v-model.number="formData.tenantId" :clearable="true" placeholder="请输入租户id" />
             </el-form-item>
-            <el-form-item label="创建时间:"  prop="createdAt" >
+            <!-- <el-form-item label="创建时间:"  prop="createdAt" >
               <el-date-picker v-model="formData.createdAt" type="date" style="width:100%" placeholder="选择日期" :clearable="true"  />
             </el-form-item>
             <el-form-item label="更新时间:"  prop="updatedAt" >
               <el-date-picker v-model="formData.updatedAt" type="date" style="width:100%" placeholder="选择日期" :clearable="true"  />
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item label="基础颜色:"  prop="baseColor" >
               <el-input v-model="formData.baseColor" :clearable="true"  placeholder="请输入基础颜色" />
             </el-form-item>
@@ -287,9 +300,14 @@
             <el-form-item label="微信账号:"  prop="wechatAccount" >
               <el-input v-model="formData.wechatAccount" :clearable="true"  placeholder="请输入微信账号" />
             </el-form-item>
-            <el-form-item label="状态:"  prop="status" >
-              <el-input v-model.number="formData.status" :clearable="true" placeholder="请输入状态" />
+            <el-form-item v-if="type !== 'create'" label="状态:"  prop="status" >
+              <el-select v-model="formData.status" placeholder="请选择状态" style="width:100%" :clearable="true" >
+                <el-option v-for="(item,key) in tenantStatusOptions" :key="key" :label="item.label" :value="item.value" />
+              </el-select>
             </el-form-item>
+            <!-- <el-form-item label="状态:"  prop="status" >
+              <el-input v-model.number="formData.status" :clearable="true" placeholder="请输入状态" />
+            </el-form-item> -->
           </el-form>
     </el-drawer>
   </div>
@@ -308,6 +326,7 @@ import {
 // 全量引入格式化工具 请按需保留
 import { getDictFunc, formatDate, formatBoolean, filterDict ,filterDataSource, ReturnArrImg, onDownloadFile } from '@/utils/format'
 import { ElMessage, ElMessageBox } from 'element-plus'
+// import { create } from 'sortablejs';
 import { ref, reactive } from 'vue'
 
 defineOptions({
@@ -460,9 +479,11 @@ const getTableData = async() => {
 getTableData()
 
 // ============== 表格控制部分结束 ===============
+const tenantStatusOptions = ref([])
 
 // 获取需要的字典 可能为空 按需保留
 const setOptions = async () =>{
+  tenantStatusOptions.value = await getDictFunc('tenantStatus')
 }
 
 // 获取需要的字典 可能为空 按需保留
@@ -598,6 +619,7 @@ const closeDialog = () => {
 }
 // 弹窗确定
 const enterDialog = async () => {
+  console.log("111111111->", formData.value)
      elFormRef.value?.validate( async (valid) => {
              if (!valid) return
               let res

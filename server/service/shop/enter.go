@@ -10,4 +10,8 @@ type ServiceGroup struct {
 	UserApplyJoinTenantProcessFlowService
 	TenantInviteUserProcessService
 	TenantInviteUserProcessLogService
+	TenantUserRelService
+	AuthConfigService
+	AuthService
+	UserAuthInfoService
 }

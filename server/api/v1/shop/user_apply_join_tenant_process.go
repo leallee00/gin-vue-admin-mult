@@ -2,14 +2,14 @@ package shop
 
 import (
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
-    "github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
-    "github.com/flipped-aurora/gin-vue-admin/server/model/shop"
-    shopReq "github.com/flipped-aurora/gin-vue-admin/server/model/shop/request"
-    "github.com/gin-gonic/gin"
-    "go.uber.org/zap"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/shop"
+	shopReq "github.com/flipped-aurora/gin-vue-admin/server/model/shop/request"
+	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
-type UserApplyJoinTenantProcessApi struct {}
+type UserApplyJoinTenantProcessApi struct{}
 
 // CreateUserApplyJoinTenantProcess 创建userApplyJoinTenantProcess表
 // @Tags UserApplyJoinTenantProcess
@@ -24,16 +24,17 @@ func (userApplyJoinTenantProcessApi *UserApplyJoinTenantProcessApi) CreateUserAp
 	var userApplyJoinTenantProcess shop.UserApplyJoinTenantProcess
 	err := c.ShouldBindJSON(&userApplyJoinTenantProcess)
 	if err != nil {
+		global.GVA_LOG.Error("解析json失败!", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
 	err = userApplyJoinTenantProcessService.CreateUserApplyJoinTenantProcess(&userApplyJoinTenantProcess)
 	if err != nil {
-        global.GVA_LOG.Error("创建失败!", zap.Error(err))
+		global.GVA_LOG.Error("创建失败!", zap.Error(err))
 		response.FailWithMessage("创建失败", c)
 		return
 	}
-    response.OkWithMessage("创建成功", c)
+	response.OkWithMessage("创建成功", c)
 }
 
 // DeleteUserApplyJoinTenantProcess 删除userApplyJoinTenantProcess表
@@ -49,7 +50,7 @@ func (userApplyJoinTenantProcessApi *UserApplyJoinTenantProcessApi) DeleteUserAp
 	ID := c.Query("ID")
 	err := userApplyJoinTenantProcessService.DeleteUserApplyJoinTenantProcess(ID)
 	if err != nil {
-        global.GVA_LOG.Error("删除失败!", zap.Error(err))
+		global.GVA_LOG.Error("删除失败!", zap.Error(err))
 		response.FailWithMessage("删除失败", c)
 		return
 	}
@@ -68,7 +69,7 @@ func (userApplyJoinTenantProcessApi *UserApplyJoinTenantProcessApi) DeleteUserAp
 	IDs := c.QueryArray("IDs[]")
 	err := userApplyJoinTenantProcessService.DeleteUserApplyJoinTenantProcessByIds(IDs)
 	if err != nil {
-        global.GVA_LOG.Error("批量删除失败!", zap.Error(err))
+		global.GVA_LOG.Error("批量删除失败!", zap.Error(err))
 		response.FailWithMessage("批量删除失败", c)
 		return
 	}
@@ -93,10 +94,11 @@ func (userApplyJoinTenantProcessApi *UserApplyJoinTenantProcessApi) UpdateUserAp
 	}
 	err = userApplyJoinTenantProcessService.UpdateUserApplyJoinTenantProcess(userApplyJoinTenantProcess)
 	if err != nil {
-        global.GVA_LOG.Error("更新失败!", zap.Error(err))
+		global.GVA_LOG.Error("更新失败!", zap.Error(err))
 		response.FailWithMessage("更新失败", c)
 		return
 	}
+
 	response.OkWithMessage("更新成功", c)
 }
 
@@ -113,7 +115,7 @@ func (userApplyJoinTenantProcessApi *UserApplyJoinTenantProcessApi) FindUserAppl
 	ID := c.Query("ID")
 	reuserApplyJoinTenantProcess, err := userApplyJoinTenantProcessService.GetUserApplyJoinTenantProcess(ID)
 	if err != nil {
-        global.GVA_LOG.Error("查询失败!", zap.Error(err))
+		global.GVA_LOG.Error("查询失败!", zap.Error(err))
 		response.FailWithMessage("查询失败", c)
 		return
 	}
@@ -138,16 +140,16 @@ func (userApplyJoinTenantProcessApi *UserApplyJoinTenantProcessApi) GetUserApply
 	}
 	list, total, err := userApplyJoinTenantProcessService.GetUserApplyJoinTenantProcessInfoList(pageInfo)
 	if err != nil {
-	    global.GVA_LOG.Error("获取失败!", zap.Error(err))
-        response.FailWithMessage("获取失败", c)
-        return
-    }
-    response.OkWithDetailed(response.PageResult{
-        List:     list,
-        Total:    total,
-        Page:     pageInfo.Page,
-        PageSize: pageInfo.PageSize,
-    }, "获取成功", c)
+		global.GVA_LOG.Error("获取失败!", zap.Error(err))
+		response.FailWithMessage("获取失败", c)
+		return
+	}
+	response.OkWithDetailed(response.PageResult{
+		List:     list,
+		Total:    total,
+		Page:     pageInfo.Page,
+		PageSize: pageInfo.PageSize,
+	}, "获取成功", c)
 }
 
 // GetUserApplyJoinTenantProcessPublic 不需要鉴权的userApplyJoinTenantProcess表接口
@@ -159,9 +161,9 @@ func (userApplyJoinTenantProcessApi *UserApplyJoinTenantProcessApi) GetUserApply
 // @Success 200 {object} response.Response{data=object,msg=string} "获取成功"
 // @Router /userApplyJoinTenantProcess/getUserApplyJoinTenantProcessPublic [get]
 func (userApplyJoinTenantProcessApi *UserApplyJoinTenantProcessApi) GetUserApplyJoinTenantProcessPublic(c *gin.Context) {
-    // 此接口不需要鉴权
-    // 示例为返回了一个固定的消息接口，一般本接口用于C端服务，需要自己实现业务逻辑
-    response.OkWithDetailed(gin.H{
-       "info": "不需要鉴权的userApplyJoinTenantProcess表接口信息",
-    }, "获取成功", c)
+	// 此接口不需要鉴权
+	// 示例为返回了一个固定的消息接口，一般本接口用于C端服务，需要自己实现业务逻辑
+	response.OkWithDetailed(gin.H{
+		"info": "不需要鉴权的userApplyJoinTenantProcess表接口信息",
+	}, "获取成功", c)
 }
